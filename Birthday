@@ -320,7 +320,7 @@
             const SURPRISE_DATA = [
                 {
                     // SURPRISE 1: Our First Memory
-                    image: 'https://placehold.co/400x300/FFB5D3/ffffff?text=Our+First+Memory+%E2%9D%A4', // <-- REPLACE THIS URL
+                    image: 'Snapchat-1449494374.jpg', // <-- REPLACE THIS URL
                     message: "Pumpkin,\nThis photo will always be special because it was the first one we ever clicked together. We didn’t even plan it, but it somehow became one of the best memories—two idiots smiling in the middle of greenery, not knowing how many moments we’d end up sharing ahead.\n\nEvery time I see this picture, it reminds me how easy, comfortable and natural our friendship has always been.\nThanks for being the kind of friend who brings calmness, jokes, peace and drama all in perfect balance 😂\n\nThis picture is where our story of best-friendship actually started.\nHappy Birthday, Pumpkin ✨💛"
                 },
                 {
