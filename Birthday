@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Special Day is Almost Here💕</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Cute Fonts: Poppins (Main) and Handlee (Handwritten/Cute) -->
+    <link href="https://fonts.googleapis.com/css2?family=Handlee&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom Tailwind Configuration */
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'soft-pink': '#FFDADA', /* Light background pink */
+                        'pastel-pink': '#FFB5D3', /* Buttons/Highlights */
+                        'pastel-purple': '#D9B5FF', /* Secondary highlight */
+                        'card-bg': 'rgba(255, 255, 255, 0.95)',
+                    },
+                    fontFamily: {
+                        'cute': ['Handlee', 'cursive'],
+                        'sans': ['Poppins', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'gentle': '0 10px 30px rgba(255, 181, 211, 0.4)', /* Pastel shadow */
+                        'glow': '0 0 15px rgba(255, 181, 211, 0.8), 0 0 30px rgba(217, 181, 255, 0.6)',
+                    },
+                    animation: {
+                        'float-heart': 'floatHeart 10s ease-in-out infinite',
+                        'confetti-fall': 'confettiFall 5s ease-out forwards',
+                        'card-tilt': 'cardTilt 1.5s ease-in-out infinite alternate',
+                        'pop-in': 'popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
+                    },
+                    keyframes: {
+                        floatHeart: {
+                            '0%, 100%': { transform: 'translateY(0) rotate(0deg) scale(1)' },
+                            '50%': { transform: 'translateY(-20px) rotate(5deg) scale(1.05)' },
+                        },
+                        confettiFall: {
+                            '0%': { transform: 'translateY(-100vh) rotate(0deg)', opacity: 0 },
+                            '100%': { transform: 'translateY(100vh) rotate(720deg)', opacity: 1 },
+                        },
+                        cardTilt: {
+                            '0%': { transform: 'rotate(2deg) scale(1.0)' },
+                            '100%': { transform: 'rotate(-2deg) scale(1.05)' },
+                        },
+                        popIn: {
+                            '0%': { opacity: 0, transform: 'scale(0.8) translateY(20px)' },
+                            '100%': { opacity: 1, transform: 'scale(1) translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+
+        /* Base styles */
+        body {
+            background-color: '#FFDADA'; /* soft-pink */
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden; /* Hide scrollbar caused by floating elements */
+            transition: background-color 0.8s ease-in-out;
+        }
+
+        h1, h2 {
+            font-family: 'Handlee', cursive;
+        }
+
+        /* Floating particles */
+        .particle {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: linear-gradient(135deg, #FFB5D3, #D9B5FF);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: floatHeart 10s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .heart {
+            font-size: 20px;
+            color: #FFB5D3;
+            animation: floatHeart 12s ease-in-out infinite;
+        }
+
+        /* Custom Confetti style for card open */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: transparent;
+            opacity: 0;
+            top: 50%;
+            left: 50%;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        /* Gradient for the special button */
+        .gradient-btn {
+            background: linear-gradient(to right, #FFB5D3, #D9B5FF);
+            transition: all 0.3s ease-in-out;
+        }
+        .gradient-btn:hover {
+            box-shadow: 0 0 15px rgba(255, 181, 211, 0.8), 0 0 30px rgba(217, 181, 255, 0.6);
+            transform: scale(1.05);
+        }
+
+        /* Modal styling */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 60;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            place-items: center;
+        }
+
+        .modal-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1.5rem;
+            max-width: 90%;
+            width: 400px;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+            transform: scale(0.8) translateY(-50px);
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        }
+
+        .modal-overlay.open {
+            display: grid;
+            opacity: 1;
+        }
+        .modal-overlay.open .modal-card {
+            transform: scale(1) translateY(0);
+        }
+
+        /* Allow long messages to wrap neatly */
+        #modal-message {
+            text-align: left;
+            white-space: pre-wrap;
+        }
+
+    </style>
+</head>
+<body class="p-4">
+
+    <!-- Floating Particles Background Layer -->
+    <div id="particles" class="absolute inset-0 z-0 overflow-hidden"></div>
+
+    <div id="app" class="relative z-10 w-full max-w-lg mx-auto p-4 flex flex-col items-center justify-center min-h-[80vh]">
+
+        <!-- 1. Countdown Page -->
+        <div id="countdown-screen" class="w-full text-center animate-pop-in">
+            <h1 class="text-4xl sm:text-5xl text-pastel-pink font-cute mb-8 drop-shadow-lg">Your Special Day is Almost Here💕</h1>
+
+            <!-- Countdown Boxes -->
+            <div id="countdown-timer" class="flex justify-center space-x-2 sm:space-x-4 mb-10">
+                <!-- Day Box -->
+                <div class="p-4 sm:p-6 bg-card-bg rounded-2xl shadow-gentle flex flex-col items-center w-20 sm:w-24 transition-all hover:shadow-glow">
+                    <div id="days" class="text-3xl sm:text-4xl font-bold text-pastel-purple">0</div>
+                    <div class="text-xs sm:text-sm text-gray-600">DAYS</div>
+                    <div class="text-2xl mt-1">❤️</div>
+                </div>
+                <!-- Hour Box -->
+                <div class="p-4 sm:p-6 bg-card-bg rounded-2xl shadow-gentle flex flex-col items-center w-20 sm:w-24 transition-all hover:shadow-glow">
+                    <div id="hours" class="text-3xl sm:text-4xl font-bold text-pastel-purple">0</div>
+                    <div class="text-xs sm:text-sm text-gray-600">HOURS</div>
+                    <div class="text-2xl mt-1">🎁</div>
+                </div>
+                <!-- Minute Box -->
+                <div class="p-4 sm:p-6 bg-card-bg rounded-2xl shadow-gentle flex flex-col items-center w-20 sm:w-24 transition-all hover:shadow-glow">
+                    <div id="minutes" class="text-3xl sm:text-4xl font-bold text-pastel-purple">0</div>
+                    <div class="text-xs sm:text-sm text-gray-600">MINUTES</div>
+                    <div class="text-2xl mt-1">🎂</div>
+                </div>
+                <!-- Second Box -->
+                <div class="p-4 sm:p-6 bg-card-bg rounded-2xl shadow-gentle flex flex-col items-center w-20 sm:w-24 transition-all hover:shadow-glow">
+                    <div id="seconds" class="text-3xl sm:text-4xl font-bold text-pastel-purple">0</div>
+                    <div class="text-xs sm:text-sm text-gray-600">SECONDS</div>
+                    <div class="text-2xl mt-1">✨</div>
+                </div>
+            </div>
+
+            <!-- Subtitle -->
+            <p class="text-md sm:text-lg text-gray-700 font-sans mb-12">
+                Just a little more... A small gift for my favorite person <span class="text-red-500">❤️</span>
+            </p>
+
+            <!-- Pagination Dots -->
+            <div class="flex justify-center space-x-2 absolute bottom-4 left-1/2 -translate-x-1/2">
+                <div class="w-2 h-2 rounded-full bg-pastel-pink"></div>
+                <div class="w-2 h-2 rounded-full bg-pastel-purple opacity-50"></div>
+                <div class="w-2 h-2 rounded-full bg-pastel-purple opacity-50"></div>
+            </div>
+        </div>
+
+        <!-- 2. Transition Screen (Hidden initially) -->
+        <div id="transition-screen" class="hidden w-full text-center flex flex-col items-center justify-center transition-opacity duration-500">
+            <h1 class="text-5xl sm:text-7xl text-pastel-pink font-cute mb-12 animate-bounce">It’s Time!</h1>
+            <button id="next-to-loading-btn" class="gradient-btn text-white text-xl sm:text-2xl font-semibold py-4 px-8 rounded-full shadow-lg transition-all duration-300">
+                For you →
+            </button>
+        </div>
+
+        <!-- 3. Loading Screen (Hidden initially) -->
+        <div id="loading-screen" class="hidden w-full text-center flex flex-col items-center justify-center transition-opacity duration-500">
+            <div class="p-10 bg-card-bg rounded-3xl shadow-gentle w-64 sm:w-80 text-center animate-pulse">
+                <p class="text-xl sm:text-2xl font-cute text-gray-800 mb-4">Loading something special...</p>
+                <div class="text-4xl">🎂✨🎁❤️🎈</div>
+            </div>
+        </div>
+
+        <!-- 4. Card Intro Screen (Hidden initially) -->
+        <div id="card-intro-screen" class="hidden w-full text-center flex flex-col items-center justify-center transition-opacity duration-500 animate-pop-in">
+            <h1 class="text-4xl sm:text-6xl text-pastel-pink font-cute mb-2 drop-shadow-lg">Happy Birthday! 🥳🎂🎉</h1>
+            <p class="text-xl sm:text-2xl text-gray-700 font-sans mb-12">To My Cutiepie <span class="text-red-500">💕</span></p>
+
+            <!-- Tilted Gradient Card -->
+            <div id="card-to-tap" class="p-12 sm:p-16 w-full max-w-sm bg-white rounded-3xl shadow-gentle cursor-pointer transition-all duration-500 hover:scale-[1.05] hover:shadow-glow"
+                 style="transform: rotate(3deg); background: linear-gradient(145deg, #FFB5D3 0%, #D9B5FF 100%); animation: cardTilt 1.5s ease-in-out infinite alternate;">
+                <p class="text-white text-2xl sm:text-3xl font-cute drop-shadow-md">Tap to open your card 🎁</p>
+            </div>
+
+            <!-- Pagination Dots -->
+            <div class="flex justify-center space-x-2 absolute bottom-4 left-1/2 -translate-x-1/2">
+                <div class="w-2 h-2 rounded-full bg-pastel-purple opacity-50"></div>
+                <div class="w-2 h-2 rounded-full bg-pastel-pink"></div>
+                <div class="w-2 h-2 rounded-full bg-pastel-purple opacity-50"></div>
+            </div>
+        </div>
+
+        <!-- 5. Birthday Message Screen (Hidden initially) -->
+        <div id="message-screen" class="hidden w-full text-center flex flex-col items-center justify-center transition-opacity duration-500 animate-pop-in">
+            <!-- Confetti Container -->
+            <div id="confetti-container" class="absolute inset-0 pointer-events-none z-10"></div>
+
+            <div class="p-6 sm:p-10 bg-card-bg rounded-3xl shadow-gentle w-full max-w-md text-center">
+                <h2 class="text-3xl sm:text-4xl font-cute text-pastel-pink mb-4">Happy Birthday!</h2>
+
+                <!-- Message Box -->
+                <p class="text-md sm:text-lg text-gray-800 font-sans leading-relaxed mb-6">
+                    Just wanted to remind you—you’re my favorite person.
+                    My days are better, smiles are wider, and life is sweeter because of you.
+                    I hope your birthday is full of love, magic, and everything that makes you smile <span class="text-red-500">❤️</span>
+                </p>
+                <p class="text-sm sm:text-md text-pastel-purple font-semibold">
+                    Let’s always stay like this… together, forever 💛
+                </p>
+            </div>
+
+            <!-- Surprise Buttons -->
+            <div class="mt-8 flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4 w-full justify-center">
+                <button class="surprise-btn gradient-btn text-white font-semibold py-3 px-6 rounded-full shadow-md text-sm sm:text-base" data-surprise="1">Open Surprise 1</button>
+                <button class="surprise-btn gradient-btn text-white font-semibold py-3 px-6 rounded-full shadow-md text-sm sm:text-base" data-surprise="2">Open Surprise 2</button>
+                <button class="surprise-btn gradient-btn text-white font-semibold py-3 px-6 rounded-full shadow-md text-sm sm:text-base" data-surprise="3">Open Surprise 3</button>
+            </div>
+
+            <!-- Pagination Dots -->
+            <div class="flex justify-center space-x-2 absolute bottom-4 left-1/2 -translate-x-1/2">
+                <div class="w-2 h-2 rounded-full bg-pastel-purple opacity-50"></div>
+                <div class="w-2 h-2 rounded-full bg-pastel-purple opacity-50"></div>
+                <div class="w-2 h-2 rounded-full bg-pastel-pink"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modal Popup for Surprises -->
+    <div id="surprise-modal" class="modal-overlay">
+        <div id="modal-content" class="modal-card">
+            <div class="flex justify-end mb-2">
+                <button id="close-modal-btn" class="text-gray-500 hover:text-gray-900 text-2xl">✖</button>
+            </div>
+            <!-- Added a fallback URL to the onerror attribute just in case the placeholder fails -->
+            <img id="modal-image" class="w-full h-auto rounded-xl object-cover mb-4 shadow-lg" src="" alt="Surprise Image" onerror="this.onerror=null; this.src='https://placehold.co/400x300/CCCCCC/000000?text=Image+Loading+Error';">
+            <p id="modal-message" class="text-center text-lg font-cute text-gray-800"></p>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- CONFIGURATION ---
+            
+            // Countdown set for 10.5 seconds for quick testing
+            const targetDate = new Date();
+            targetDate.setTime(targetDate.getTime() + 10 * 1000 + 500); 
+
+            const SCREENS = {
+                COUNTDOWN: 'countdown-screen',
+                TRANSITION: 'transition-screen',
+                LOADING: 'loading-screen',
+                CARD_INTRO: 'card-intro-screen',
+                MESSAGE: 'message-screen'
+            };
+
+            /*
+            ===================================================================
+            *** IMPORTANT: IMAGE LINK EDITING SECTION ***
+
+            Once you upload your images to GitHub (or another host), 
+            REPLACE the placeholder URLs below with the direct link to your image file.
+            For example, change 'https://placehold.co/...' to 'YOUR_GITHUB_RAW_URL/image1.jpg'
+            ===================================================================
+            */
+            const SURPRISE_DATA = [
+                {
+                    // SURPRISE 1: Our First Memory
+                    image: 'https://placehold.co/400x300/FFB5D3/ffffff?text=Our+First+Memory+%E2%9D%A4', // <-- REPLACE THIS URL
+                    message: "Pumpkin,\nThis photo will always be special because it was the first one we ever clicked together. We didn’t even plan it, but it somehow became one of the best memories—two idiots smiling in the middle of greenery, not knowing how many moments we’d end up sharing ahead.\n\nEvery time I see this picture, it reminds me how easy, comfortable and natural our friendship has always been.\nThanks for being the kind of friend who brings calmness, jokes, peace and drama all in perfect balance 😂\n\nThis picture is where our story of best-friendship actually started.\nHappy Birthday, Pumpkin ✨💛"
+                },
+                {
+                    // SURPRISE 2: Happy Birthday Bestie
+                    image: 'https://placehold.co/400x300/D9B5FF/ffffff?text=Happy+Birthday+Bestie+%F0%9F%8E%89', // <-- REPLACE THIS URL
+                    message: "Happy Birthday, Pumpkin! 🎉💛\nYou deserve the happiest things in life—good people, good days, good energy and endless smiles.\nYou’re one of the sweetest, most genuine people I know, and I’m really lucky to have you as my best friend.\n\nKeep shining your soft, kind energy everywhere you go.\nKeep being the same cute, grounded, sensible person you are.\nAnd keep annoying me the way you always do—I guess I’m used to it now 😂\n\nHave an amazing year ahead, Pumpkin.\nMake today unforgettable because you truly deserve it 💛"
+                },
+                {
+                    // SURPRISE 3: Elegance and Grace
+                    image: 'https://placehold.co/400x300/FFDADA/000000?text=Elegance+and+Grace+%E2%9C%A8', // <-- REPLACE THIS URL
+                    message: "Pumpkin,\nTraditional outfits honestly suit you so much—you look effortlessly graceful and confident in them. This picture is proof that you don’t even have to try… you just naturally carry elegance with you.\n\nHappy Birthday once again, Pumpkin!\nI hope this year brings you new experiences, new achievements, and a lot of happiness. Keep smiling the way you do—it genuinely brightens people’s day.\n\nStay the same pure, calm, stylish version of yourself 💛✨"
+                }
+            ];
+            /*
+            ===================================================================
+            *** END OF IMAGE LINK EDITING SECTION ***
+            ===================================================================
+            */
+
+            // --- STATE & UTILS ---
+            let currentScreen = SCREENS.COUNTDOWN;
+            const elements = {};
+            
+            // Get all necessary elements
+            Object.keys(SCREENS).forEach(key => {
+                elements[SCREENS[key]] = document.getElementById(SCREENS[key]);
+            });
+
+            elements.days = document.getElementById('days');
+            elements.hours = document.getElementById('hours');
+            elements.minutes = document.getElementById('minutes');
+            elements.seconds = document.getElementById('seconds');
+            elements.transitionBtn = document.getElementById('next-to-loading-btn');
+            elements.cardToTap = document.getElementById('card-to-tap');
+            elements.confettiContainer = document.getElementById('confetti-container');
+            elements.modal = document.getElementById('surprise-modal');
+            elements.closeModalBtn = document.getElementById('close-modal-btn');
+            elements.modalImage = document.getElementById('modal-image');
+            elements.modalMessage = document.getElementById('modal-message');
+            elements.surpriseBtns = document.querySelectorAll('.surprise-btn');
+
+            // --- SCREEN MANAGEMENT ---
+            function switchScreen(newScreen) {
+                // Hide all screens
+                Object.values(elements).forEach(el => {
+                    if (el && el.id && el.id.includes('-screen')) {
+                        el.classList.add('hidden');
+                    }
+                });
+                
+                // Show the new screen
+                const newEl = elements[newScreen];
+                if (newEl) {
+                    newEl.classList.remove('hidden');
+                    // Add pop-in animation when switching
+                    newEl.classList.remove('animate-pop-in');
+                    void newEl.offsetWidth; // Trigger reflow
+                    newEl.classList.add('animate-pop-in');
+                }
+                currentScreen = newScreen;
+            }
+
+            // --- COUNTDOWN LOGIC ---
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const distance = targetDate.getTime() - now;
+
+                if (distance < 0) {
+                    clearInterval(timerInterval);
+                    switchScreen(SCREENS.TRANSITION);
+                    return;
+                }
+
+                // Days, Hours, and Minutes will show 0 for a 10-second countdown
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                // Update the DOM only if on the countdown screen
+                if (currentScreen === SCREENS.COUNTDOWN) {
+                    elements.days.textContent = days;
+                    elements.hours.textContent = hours;
+                    elements.minutes.textContent = minutes;
+                    elements.seconds.textContent = seconds;
+                }
+            }
+
+            const timerInterval = setInterval(updateCountdown, 1000);
+            updateCountdown(); // Initial call
+
+            // --- TRANSITION HANDLERS ---
+            elements.transitionBtn.addEventListener('click', () => {
+                switchScreen(SCREENS.LOADING);
+                setTimeout(() => {
+                    switchScreen(SCREENS.CARD_INTRO);
+                }, 1500); // Simulate loading time
+            });
+
+            elements.cardToTap.addEventListener('click', () => {
+                switchScreen(SCREENS.MESSAGE);
+                generateConfetti();
+            });
+
+            // --- CONFETTI ANIMATION ---
+            function generateConfetti() {
+                const colors = ['#FFB5D3', '#D9B5FF', '#FFDADA', '#F06292'];
+                const shapes = ['❤️', '✨', '🎁', '🎂'];
+                const count = 50;
+
+                for (let i = 0; i < count; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.classList.add('confetti', 'absolute', 'text-2xl');
+                    
+                    // Random shape/color
+                    confetti.innerHTML = shapes[Math.floor(Math.random() * shapes.length)];
+                    confetti.style.color = colors[Math.floor(Math.random() * colors.length)];
+                    
+                    // Starting position is near the card center
+                    const startX = 50 + (Math.random() - 0.5) * 10; 
+                    const startY = 50 + (Math.random() - 0.5) * 10;
+
+                    confetti.style.left = `${startX}%`;
+                    confetti.style.top = `${startY}%`;
+                    
+                    // Animation parameters
+                    const duration = 2 + Math.random() * 3; // 2 to 5 seconds
+                    const delay = Math.random() * 0.5;
+                    const finalX = startX + (Math.random() - 0.5) * 150;
+                    const finalY = startY + 100 + Math.random() * 50;
+                    const rotation = Math.random() * 720;
+
+                    confetti.animate([
+                        { opacity: 1, transform: `translate(0, 0) rotate(0deg)` },
+                        { opacity: 0.8, transform: `translate(${finalX - startX}vw, ${finalY - startY}vh) rotate(${rotation}deg)` }
+                    ], {
+                        duration: duration * 1000,
+                        delay: delay * 1000,
+                        easing: 'ease-out',
+                        fill: 'forwards'
+                    });
+
+                    elements.confettiContainer.appendChild(confetti);
+
+                    // Clean up after animation
+                    setTimeout(() => confetti.remove(), (duration + delay) * 1000);
+                }
+            }
+
+
+            // --- PARTICLE BACKGROUND ---
+            const particleContainer = document.getElementById('particles');
+            const particleCount = 20;
+
+            function createParticle(isHeart = false) {
+                const p = document.createElement('div');
+                if (isHeart) {
+                    p.innerHTML = '❤️';
+                    p.classList.add('heart');
+                } else {
+                    p.classList.add('particle');
+                }
+
+                p.style.left = `${Math.random() * 100}vw`;
+                p.style.top = `${Math.random() * 100}vh`;
+                p.style.width = `${5 + Math.random() * 15}px`;
+                p.style.height = p.style.width;
+                p.style.animationDuration = `${10 + Math.random() * 10}s`; // Slower floating
+                p.style.animationDelay = `-${Math.random() * 10}s`; // Start off-sync
+                p.style.opacity = `${0.3 + Math.random() * 0.4}`;
+
+                particleContainer.appendChild(p);
+            }
+
+            for (let i = 0; i < particleCount; i++) {
+                createParticle(i % 3 === 0); // Mix of hearts and solid particles
+            }
+
+
+            // --- SURPRISE MODAL LOGIC ---
+            elements.surpriseBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const index = parseInt(e.currentTarget.dataset.surprise) - 1;
+                    const data = SURPRISE_DATA[index];
+                    
+                    // Set image source using the configured URL
+                    elements.modalImage.src = data.image;
+                    
+                    // Set message, replacing newline characters with <br> for HTML rendering
+                    elements.modalMessage.innerHTML = data.message.replace(/\n/g, '<br>');
+
+                    elements.modal.classList.add('open');
+                    elements.modal.style.display = 'grid';
+                });
+            });
+
+            function closeModal() {
+                elements.modal.classList.remove('open');
+                setTimeout(() => {
+                    elements.modal.style.display = 'none';
+                }, 300);
+            }
+
+            elements.closeModalBtn.addEventListener('click', closeModal);
+            elements.modal.addEventListener('click', (e) => {
+                // Close if clicking the overlay, not the card content
+                if (e.target.id === 'surprise-modal') {
+                    closeModal();
+                }
+            });
+
+        });
+    </script>
+</body>
+</html>
