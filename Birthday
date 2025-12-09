@@ -325,12 +325,12 @@
                 },
                 {
                     // SURPRISE 2: Happy Birthday Bestie
-                    image: 'https://placehold.co/400x300/D9B5FF/ffffff?text=Happy+Birthday+Bestie+%F0%9F%8E%89', // <-- REPLACE THIS URL
+                    image: 'Snapchat-1864486553.jpg', // <-- REPLACE THIS URL
                     message: "Happy Birthday, Pumpkin! 🎉💛\nYou deserve the happiest things in life—good people, good days, good energy and endless smiles.\nYou’re one of the sweetest, most genuine people I know, and I’m really lucky to have you as my best friend.\n\nKeep shining your soft, kind energy everywhere you go.\nKeep being the same cute, grounded, sensible person you are.\nAnd keep annoying me the way you always do—I guess I’m used to it now 😂\n\nHave an amazing year ahead, Pumpkin.\nMake today unforgettable because you truly deserve it 💛"
                 },
                 {
                     // SURPRISE 3: Elegance and Grace
-                    image: 'https://placehold.co/400x300/FFDADA/000000?text=Elegance+and+Grace+%E2%9C%A8', // <-- REPLACE THIS URL
+                    image: 'Snapchat-1967501038.jpg', // <-- REPLACE THIS URL
                     message: "Pumpkin,\nTraditional outfits honestly suit you so much—you look effortlessly graceful and confident in them. This picture is proof that you don’t even have to try… you just naturally carry elegance with you.\n\nHappy Birthday once again, Pumpkin!\nI hope this year brings you new experiences, new achievements, and a lot of happiness. Keep smiling the way you do—it genuinely brightens people’s day.\n\nStay the same pure, calm, stylish version of yourself 💛✨"
                 }
             ];
